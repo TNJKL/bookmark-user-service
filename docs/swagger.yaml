@@ -1,0 +1,200 @@
+basePath: /
+definitions:
+  model.HealthCheckResponse:
+    properties:
+      instance_id:
+        type: string
+      message:
+        type: string
+      service_name:
+        type: string
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      display_name:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  user.getSelfInfoResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.User'
+    type: object
+  user.loginInputBody:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  user.loginResponse:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+    type: object
+  user.registerInputBody:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - display_name
+    - email
+    - password
+    - username
+    type: object
+  user.registerResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.User'
+      message:
+        type: string
+    type: object
+  user.updateSelfInfoBody:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  user.updateSelfInfoResponse:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API Swagger for bookmark-user-service.
+  title: User API for Bookmark Management Backend
+  version: 4.0.0
+paths:
+  /health-check:
+    get:
+      description: Trả về trạng thái hoạt động hiện tại, tên dịch vụ và instance ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HealthCheckResponse'
+        "500":
+          description: Lỗi hệ thống nội bộ
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: System health-check
+      tags:
+      - health-check
+  /v1/self/info:
+    get:
+      consumes:
+      - application/json
+      description: get your current information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/user.getSelfInfoResponse'
+      security:
+      - BearerAuth: []
+      summary: get your current information
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: edit your current information
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/user.updateSelfInfoBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/user.updateSelfInfoResponse'
+      security:
+      - BearerAuth: []
+      summary: edit your current information
+      tags:
+      - user
+  /v1/users/login:
+    post:
+      consumes:
+      - application/json
+      description: Return a jwt token if the input is correct
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/user.loginInputBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/user.loginResponse'
+      summary: Return a jwt token if the input is correct
+      tags:
+      - user
+  /v1/users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided information
+      parameters:
+      - description: User registration details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.registerInputBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Register an user successfully!
+          schema:
+            $ref: '#/definitions/user.registerResponse'
+      summary: Register a new user
+      tags:
+      - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

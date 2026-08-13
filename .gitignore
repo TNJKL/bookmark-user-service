@@ -1,0 +1,11 @@
+.idea/
+coverage/
+coverage.html
+coverage.out
+coverage.tmp
+bookmark-service
+.env
+.env.local
+private.pem
+public.pem
+.postgres_data
